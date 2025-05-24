@@ -33,12 +33,15 @@ async def on_message(message):
     # Prüfen: Enthält Nachricht einen Tenor- oder Giphy-Link?
     has_gif_link = any(domain in message.content.lower() for domain in ["tenor.com", "giphy.com"])
 
-    if has_gif_attachment or has_gif_link:
+    # Prüfen: Enthält Nachricht einen oder mehrere Sticker?
+    has_sticker = len(message.stickers) > 0
+
+    if has_gif_attachment or has_gif_link or has_sticker:
         await message.delete()
         alert_channel = bot.get_channel(ALERT_CHANNEL_ID)
         if alert_channel:
             await alert_channel.send(
-                f"🚨 GIF gelöscht von {message.author.mention} in <#{message.channel.id}>"
+                f"🚨 Nachricht mit GIF oder Sticker gelöscht von {message.author.mention} in <#{message.channel.id}>"
             )
 
     await bot.process_commands(message)
